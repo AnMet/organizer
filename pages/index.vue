@@ -1,56 +1,99 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import draggable from "vuedraggable";
 
-const widgets = ref([
-  { type: "tasks", title: "🧭 Tasks", text: "Manage your tasks here." },
+import BooksWidget from "~/components/BooksWidget.vue";
+import CalendarWidget from "~/components/CalendarWidget.vue";
+import DiaryWidget from "~/components/DiaryWidget.vue";
+import NotesWidget from "~/components/NotesWidget.vue";
+import TasksWidget from "~/components/TasksWidget.vue";
+import WeatherWidget from "~/components/WeatherWidget.vue";
+import { WidgetType, type DashboardWidget } from "~/types";
+
+const widgets = ref<DashboardWidget[]>([
   {
-    type: "calendar",
-    title: "📅 Calendar",
-    text: "Your schedule at a glance.",
+    type: WidgetType.tasks,
+    title: "🧭 Tasks",
+    component: TasksWidget,
+    page: `/${WidgetType.tasks}`,
   },
-  { type: "notes", title: "📝 Notes", text: "Jot down ideas and thoughts." },
-  { type: "books", title: "📚 Books", text: "Track your reading list." },
-  { type: "weather", title: "🌤️ Weather", text: "Current weather info." },
-  { type: "diary", title: "📔 Diary" }, // ← New Diary Widget
+  {
+    type: WidgetType.calendar,
+    title: "📅 Calendar",
+    component: CalendarWidget,
+    page: `/${WidgetType.calendar}`,
+  },
+  {
+    type: WidgetType.notes,
+    title: "📝 Notes",
+    component: NotesWidget,
+    page: `/${WidgetType.notes}`,
+  },
+  {
+    type: WidgetType.books,
+    title: "📚 Books",
+    component: BooksWidget,
+    page: `/${WidgetType.books}`,
+  },
+  {
+    type: WidgetType.weather,
+    title: "🌤️ Weather",
+    component: WeatherWidget,
+    page: `/${WidgetType.weather}`,
+  },
+  {
+    type: WidgetType.diary,
+    title: "📔 Diary",
+    component: DiaryWidget,
+    page: `/${WidgetType.diary}`,
+  },
 ]);
 
-const diaryEntry = ref("");
-const uploadedImages = ref([]);
-const selectedEmoji = ref("");
+// const diaryEntry = ref("");
+// const uploadedImages = ref([]);
+// const selectedEmoji = ref("");
 
-function handleImageUpload(files) {
-  uploadedImages.value = Array.from(files);
+// function handleImageUpload(files) {
+//   uploadedImages.value = Array.from(files);
+// }
+
+const router = useRouter();
+
+function goToCalendarPage() {
+  router.push("/calendar");
 }
 </script>
 
 <template>
   <v-container fluid>
     <div class="text-center pa-10">
-      <h1>Welcome to Galaxy UI ✨</h1>
+      <h1>Welcome to your Organizer ✨</h1>
       <p>Drag and drop your widgets to customize your dashboard.</p>
     </div>
 
     <draggable
       v-model="widgets"
-      item-key="title"
+      item-key="type"
       class="d-flex flex-wrap"
       :animation="200"
     >
       <template #item="{ element }">
         <v-col cols="12" md="6">
-          <!-- Render standard widgets -->
-          <v-card
-            v-if="element.type !== 'diary'"
-            class="pa-4 mb-4"
-            elevation="3"
-          >
-            <v-card-title>{{ element.title }}</v-card-title>
-            <v-card-text>{{ element.text }}</v-card-text>
+          <!-- Render widgets -->
+          <v-card class="pa-4 mb-4" elevation="3">
+            <v-card-title class="d-flex justify-space-between align-center"
+              ><span>{{ element.title }}</span>
+
+              <v-btn icon :to="element.page" variant="text" color="primary">
+                <v-icon>mdi-cog</v-icon>
+              </v-btn>
+            </v-card-title>
+            <v-card-text><component :is="element.component" /></v-card-text>
           </v-card>
 
           <!-- Render Diary Widget -->
-          <v-card v-else class="pa-4 mb-4" elevation="3">
+          <!-- <v-card v-else class="pa-4 mb-4" elevation="3">
             <v-card-title>{{ element.title }}</v-card-title>
             <v-card-text>
               <v-textarea
@@ -99,7 +142,7 @@ function handleImageUpload(files) {
             <v-card-actions>
               <v-btn color="primary">Save Entry</v-btn>
             </v-card-actions>
-          </v-card>
+          </v-card> -->
         </v-col>
       </template>
     </draggable>

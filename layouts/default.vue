@@ -2,7 +2,17 @@
   <v-app>
     <!-- Toolbar -->
     <v-app-bar color="primary" flat app>
-      <v-app-bar-title class="font-weight-bold"> 🌌 Galaxy UI </v-app-bar-title>
+      <v-app-bar-title class="font-weight-bold d-flex align-center">
+        <router-link
+          to="/"
+          class="d-flex align-center text-decoration-none text-black"
+        >
+          <v-btn icon>
+            <v-icon>mdi-home</v-icon>
+          </v-btn>
+          <span class="text-h6">My Organizer</span>
+        </router-link>
+      </v-app-bar-title>
 
       <v-spacer />
 
