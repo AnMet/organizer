@@ -1,51 +1,48 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
+import { formatDateTimeParts } from "~/composables/useCalendar";
+import { useCalendarStore } from "~/stores/CalendarStore";
 
-const date = ref("");
-const time = ref("");
-const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+const store = useCalendarStore();
+const currentDateTime = ref(new Date());
 
-function updateTime() {
-  const now = new Date();
-
-  date.value = now.toLocaleDateString("fr-FR", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-
-  time.value = now.toLocaleTimeString("fr-FR", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
+const formattedDateTime = computed(() =>
+  formatDateTimeParts(
+    currentDateTime.value,
+    store.$state.local,
+    store.$state.timezone,
+    store.$state.format
+  )
+);
 
 onMounted(() => {
-  updateTime();
-  setInterval(updateTime, 60000);
+  setInterval(() => {
+    currentDateTime.value = new Date();
+  }, 60000);
 });
 </script>
 
 <template>
-  <div>
-    <v-card class="pa-4" elevation="1" color="grey-lighten-4">
-      <v-row align="center">
-        <v-col cols="12" md="5">
-          <div class="text-body-1 font-weight-medium">{{ date }}</div>
-        </v-col>
+  <v-card class="pa-4" elevation="1" color="grey-lighten-4">
+    <v-row align="center">
+      <v-col cols="12" md="5">
+        <div class="text-body-1 font-weight-medium">
+          {{ formattedDateTime.date }}
+        </div>
+      </v-col>
 
-        <v-col cols="12" md="2">
-          <div class="text-body-1 font-weight-medium">
-            {{ time }}
-          </div>
-        </v-col>
+      <v-col cols="12" md="2">
+        <div class="text-body-1 font-weight-medium">
+          {{ formattedDateTime.time }}
+        </div>
+      </v-col>
 
-        <v-col cols="12" md="5" class="d-flex align-center">
-          <span class="mr-1" style="font-size: 1rem">🌍</span>
-          <div class="text-body-1 font-weight-medium">{{ timezone }}</div>
-        </v-col>
-      </v-row>
-    </v-card>
-  </div>
+      <v-col cols="12" md="5" class="d-flex align-center">
+        <span class="mr-1" style="font-size: 1rem">🌍</span>
+        <div class="text-body-1 font-weight-medium">
+          {{ store.$state.timezone }}
+        </div>
+      </v-col>
+    </v-row>
+  </v-card>
 </template>

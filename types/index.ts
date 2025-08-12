@@ -20,3 +20,12 @@ export interface DashboardWidget {
   component: string | object;
   page: `/${string}`; // template literal type ensures it starts with "/"
 }
+
+export const DateFormat = {
+  full: "full",
+  long: "long",
+  medium: "medium",
+  short: "books",
+} as const;
+
+export type DateFormatType = (typeof DateFormat)[keyof typeof DateFormat];
