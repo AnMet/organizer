@@ -5,7 +5,7 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
-     "start": "nuxt start",
+    "start": "nuxt start",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
@@ -16,7 +16,7 @@
     "@nuxtjs/supabase": "^1.6.0",
     "@pinia/nuxt": "^0.11.2",
     "@supabase/supabase-js": "^2.55.0",
-    "nuxt": "^4.0.3",
+    "nuxt": "^3.18.1",
     "pinia": "^3.0.3",
     "pinia-plugin-persistedstate": "^4.4.1",
     "sass": "^1.90.0",
