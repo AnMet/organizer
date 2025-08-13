@@ -14,6 +14,10 @@ export default defineNuxtConfig({
   imports: {
     dirs: ["stores"], // ✅ Auto-import Pinia stores
   },
+  alias: {
+    "~": ".",
+    "@": ".",
+  },
   build: {
     transpile: ["vuetify"], // ✅ Transpile Vuetify for SSR
   },

@@ -1,12 +1,13 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
-  { path: "/tasks", component: () => import("../pages/Tasks.vue") },
-  { path: "/calendar", component: () => import("../pages/Calendar.vue") },
-  { path: "/notes", component: () => import("../pages/Notes.vue") },
-  { path: "/books", component: () => import("../pages/Books.vue") },
-  { path: "/weather", component: () => import("../pages/Weather.vue") },
-  { path: "/diary", component: () => import("../pages/Diary.vue") },
+  { path: "/todos", component: () => import("~/pages/todos.vue") },
+  { path: "/calendar", component: () => import("~/pages/calendar.vue") },
+  { path: "/notes", component: () => import("~/pages/notes.vue") },
+  { path: "/books", component: () => import("~/pages/books.vue") },
+  { path: "/weather", component: () => import("~/pages/weather.vue") },
+  { path: "/diary", component: () => import("~/pages/diary.vue") },
+  { path: "/signup", component: () => import("~/pages/signup.vue") },
 ];
 
 const router = createRouter({

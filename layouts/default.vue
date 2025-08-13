@@ -1,3 +1,23 @@
+<script setup lang="ts">
+import { useRouter } from "vue-router";
+import { useTheme } from "vuetify";
+import { useLogout } from "~/composables/useLogout";
+import { useUser } from "~/composables/useUser";
+
+const { user } = useUser();
+const theme = useTheme();
+const router = useRouter();
+
+const toggleTheme = () => {
+  theme.global.name.value = theme.global.current.value.dark ? "light" : "dark";
+};
+
+async function handleLogout() {
+  const success = await useLogout();
+  if (success) router.push("/auth");
+}
+</script>
+
 <template>
   <v-app>
     <!-- Toolbar -->
@@ -26,9 +46,15 @@
       </v-btn>
 
       <!-- User/Login Icon -->
-      <v-btn icon :title="'User Profile'">
-        <v-icon>mdi-account-circle</v-icon>
-      </v-btn>
+      <v-btn text class="ml-4" v-if="user?.email" @click="handleLogout"
+        >Log out</v-btn
+      >
+
+      <router-link v-else to="/auth">
+        <v-btn icon :title="'User Profile'"
+          ><v-icon>mdi-account-circle</v-icon></v-btn
+        >
+      </router-link>
     </v-app-bar>
 
     <!-- Main Content -->
@@ -37,15 +63,6 @@
     </v-main>
   </v-app>
 </template>
-
-<script setup>
-import { useTheme } from "vuetify";
-
-const theme = useTheme();
-const toggleTheme = () => {
-  theme.global.name.value = theme.global.current.value.dark ? "light" : "dark";
-};
-</script>
 
 <style scoped>
 .v-app-bar-title {

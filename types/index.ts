@@ -1,9 +1,10 @@
 export * from "./book";
+export * from "./calendar";
 export * from "./todo";
 export * from "./user";
 
 export const WidgetType = {
-  tasks: "tasks",
+  todos: "todos",
   calendar: "calendar",
   notes: "notes",
   books: "books",
@@ -20,12 +21,3 @@ export interface DashboardWidget {
   component: string | object;
   page: `/${string}`; // template literal type ensures it starts with "/"
 }
-
-export const DateFormat = {
-  full: "full",
-  long: "long",
-  medium: "medium",
-  short: "books",
-} as const;
-
-export type DateFormatType = (typeof DateFormat)[keyof typeof DateFormat];

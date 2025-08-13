@@ -13,5 +13,5 @@
     },
     "types": ["vite/client", "@types/node"]
   },
-  "include": ["types", "components", "pages", "composables"]
+  "include": ["types", "components", "pages", "composables", "utils", ".nuxt"]
 }

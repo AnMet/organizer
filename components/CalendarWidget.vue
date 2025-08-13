@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 import { formatDateTimeParts } from "~/composables/useCalendar";
 import { useCalendarStore } from "~/stores/CalendarStore";
@@ -9,7 +9,7 @@ const currentDateTime = ref(new Date());
 const formattedDateTime = computed(() =>
   formatDateTimeParts(
     currentDateTime.value,
-    store.$state.local,
+    store.$state.locale,
     store.$state.timezone,
     store.$state.format
   )

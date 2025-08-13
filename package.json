@@ -5,6 +5,7 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
+     "start": "nuxt start",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
@@ -14,6 +15,7 @@
     "@nuxtjs/color-mode": "^3.5.2",
     "@nuxtjs/supabase": "^1.6.0",
     "@pinia/nuxt": "^0.11.2",
+    "@supabase/supabase-js": "^2.55.0",
     "nuxt": "^4.0.3",
     "pinia": "^3.0.3",
     "pinia-plugin-persistedstate": "^4.4.1",

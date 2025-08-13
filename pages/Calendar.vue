@@ -1,18 +1,21 @@
-<script setup>
+<script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
-import {
-  formatDateTimeParts,
-  formats,
-  locales,
-  timezones,
-} from "~/composables/useCalendar";
+import { formatDateTimeParts } from "~/composables/useCalendar";
 import { useCalendarStore } from "~/stores/CalendarStore";
+import {
+  dateFormatOptions,
+  localeOptions,
+  timezoneOptions,
+  type DateFormatType,
+  type LocaleCode,
+  type TimezoneCode,
+} from "~/types";
 
 const store = useCalendarStore();
 
-const selectedTimezone = ref(store.$state.timezone);
-const selectedFormat = ref(store.$state.format);
-const selectedLocal = ref(store.$state.local);
+const selectedTimezone = ref<TimezoneCode>(store.$state.timezone);
+const selectedFormat = ref<DateFormatType>(store.$state.format);
+const selectedLocale = ref<LocaleCode>(store.$state.locale);
 
 const currentDateTime = ref(new Date());
 const showToast = ref(false);
@@ -21,9 +24,9 @@ const showToast = ref(false);
 const formattedDateTime = computed(() =>
   formatDateTimeParts(
     currentDateTime.value,
-    selectedLocal.value,
+    selectedLocale.value,
     selectedTimezone.value,
-    selectedFormat.value
+    selectedFormat.value as DateFormatType
   )
 );
 
@@ -32,7 +35,7 @@ const isSaved = computed(
   () =>
     selectedTimezone.value === store.$state.timezone &&
     selectedFormat.value === store.$state.format &&
-    selectedLocal.value === store.$state.local
+    selectedLocale.value === store.$state.locale
 );
 
 function updateTime() {
@@ -42,7 +45,7 @@ function updateTime() {
 function saveSettings() {
   store.setTimezone(selectedTimezone.value);
   store.setFormat(selectedFormat.value);
-  store.setLocal(selectedLocal.value); // Ensure this method exists in your store
+  store.setLocale(selectedLocale.value);
   showToast.value = true;
   setTimeout(() => (showToast.value = false), 3000);
 }
@@ -63,7 +66,9 @@ onMounted(() => {
       <v-col cols="12" md="4">
         <v-select
           v-model="selectedTimezone"
-          :items="timezones"
+          :items="timezoneOptions"
+          item-title="label"
+          item-value="value"
           label="Select Timezone"
           outlined
         />
@@ -72,7 +77,7 @@ onMounted(() => {
       <v-col cols="12" md="4">
         <v-select
           v-model="selectedFormat"
-          :items="formats"
+          :items="dateFormatOptions"
           label="Select Format"
           outlined
         />
@@ -80,9 +85,10 @@ onMounted(() => {
 
       <v-col cols="12" md="4">
         <v-select
-          v-model="selectedLocal"
-          :items="locales"
+          v-model="selectedLocale"
+          :items="localeOptions"
           item-title="label"
+          item-value="value"
           label="Select Language"
           outlined
         />
@@ -135,7 +141,9 @@ onMounted(() => {
           <div class="text-caption mt-2 ma-2">
             <div>
               Local:
-              {{ locales.find((l) => l.value === selectedLocal).label }}
+              {{
+                localeOptions.find((opt) => opt.value === selectedLocale)?.label
+              }}
             </div>
             <div>Format: {{ selectedFormat }}</div>
           </div>

@@ -6,16 +6,16 @@ import BooksWidget from "~/components/BooksWidget.vue";
 import CalendarWidget from "~/components/CalendarWidget.vue";
 import DiaryWidget from "~/components/DiaryWidget.vue";
 import NotesWidget from "~/components/NotesWidget.vue";
-import TasksWidget from "~/components/TasksWidget.vue";
+import TodosWidget from "~/components/TodosWidget.vue";
 import WeatherWidget from "~/components/WeatherWidget.vue";
 import { WidgetType, type DashboardWidget } from "~/types";
 
 const widgets = ref<DashboardWidget[]>([
   {
-    type: WidgetType.tasks,
-    title: "🧭 Tasks",
-    component: TasksWidget,
-    page: `/${WidgetType.tasks}`,
+    type: WidgetType.todos,
+    title: "🧭 Todo list",
+    component: TodosWidget,
+    page: `/${WidgetType.todos}`,
   },
   {
     type: WidgetType.calendar,
