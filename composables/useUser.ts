@@ -1,5 +1,5 @@
+import type { User } from "@supabase/supabase-js";
 import { ref } from "vue";
-import type { User } from "~/types";
 import { supabase } from "~/utils/supabaseClient";
 
 const user = ref<User | null>(null);

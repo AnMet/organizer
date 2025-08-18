@@ -1,16 +1,20 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { useTheme } from "vuetify";
-import { useLogout } from "~/composables/useLogout";
-import { useUser } from "~/composables/useUser";
+import { useLogout } from "../composables/useLogout";
+import { useUser } from "../composables/useUser";
 
 const { user } = useUser();
 const theme = useTheme();
 const router = useRouter();
 
 const toggleTheme = () => {
-  theme.global.name.value = theme.global.current.value.dark ? "light" : "dark";
+  theme.change(theme.global.current.value.dark ? "light" : "dark");
 };
+
+const isDark = computed(() => theme.global.current.value.dark);
+const toolbarTextColor = computed(() => (isDark.value ? "white" : "black"));
 
 async function handleLogout() {
   const success = await useLogout();
@@ -20,15 +24,16 @@ async function handleLogout() {
 
 <template>
   <v-app>
-    <!-- Toolbar -->
+    <!-- Navbar -->
     <v-app-bar color="primary" flat app>
       <v-app-bar-title class="font-weight-bold d-flex align-center">
         <router-link
           to="/"
-          class="d-flex align-center text-decoration-none text-black"
+          class="d-flex align-center text-decoration-none"
+          :style="{ color: toolbarTextColor }"
         >
           <v-btn icon>
-            <v-icon>mdi-home</v-icon>
+            <v-icon :color="toolbarTextColor">mdi-home</v-icon>
           </v-btn>
           <span class="text-h6">My Organizer</span>
         </router-link>
@@ -40,20 +45,26 @@ async function handleLogout() {
       <v-btn
         icon
         @click="toggleTheme"
-        :title="theme.global.current.value.dark ? 'Light mode' : 'Dark mode'"
+        :title="isDark ? 'Light mode' : 'Dark mode'"
       >
-        <v-icon>mdi-theme-light-dark</v-icon>
+        <v-icon :color="toolbarTextColor">mdi-theme-light-dark</v-icon>
       </v-btn>
 
       <!-- User/Login Icon -->
-      <v-btn text class="ml-4" v-if="user?.email" @click="handleLogout"
-        >Log out</v-btn
+      <v-btn
+        text
+        class="ml-4"
+        v-if="user?.email"
+        @click="handleLogout"
+        :style="{ color: toolbarTextColor }"
       >
+        Log out
+      </v-btn>
 
       <router-link v-else to="/auth">
-        <v-btn icon :title="'User Profile'"
-          ><v-icon>mdi-account-circle</v-icon></v-btn
-        >
+        <v-btn icon :title="'User Profile'">
+          <v-icon :color="toolbarTextColor">mdi-account-circle</v-icon>
+        </v-btn>
       </router-link>
     </v-app-bar>
 

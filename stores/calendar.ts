@@ -22,5 +22,4 @@ export const useCalendarStore = defineStore("calendar", {
       this.locale = fmt;
     },
   },
-  // persist: true,
 });

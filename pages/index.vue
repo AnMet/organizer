@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { markRaw, ref } from "vue";
 import draggable from "vuedraggable";
 
 import BooksWidget from "~/components/BooksWidget.vue";
@@ -14,37 +14,37 @@ const widgets = ref<DashboardWidget[]>([
   {
     type: WidgetType.todos,
     title: "🧭 Todo list",
-    component: TodosWidget,
+    component: markRaw(TodosWidget),
     page: `/${WidgetType.todos}`,
   },
   {
     type: WidgetType.calendar,
     title: "📅 Calendar",
-    component: CalendarWidget,
+    component: markRaw(CalendarWidget),
     page: `/${WidgetType.calendar}`,
   },
   {
     type: WidgetType.notes,
     title: "📝 Notes",
-    component: NotesWidget,
+    component: markRaw(NotesWidget),
     page: `/${WidgetType.notes}`,
   },
   {
     type: WidgetType.books,
     title: "📚 Books",
-    component: BooksWidget,
+    component: markRaw(BooksWidget),
     page: `/${WidgetType.books}`,
   },
   {
     type: WidgetType.weather,
     title: "🌤️ Weather",
-    component: WeatherWidget,
+    component: markRaw(WeatherWidget),
     page: `/${WidgetType.weather}`,
   },
   {
     type: WidgetType.diary,
     title: "📔 Diary",
-    component: DiaryWidget,
+    component: markRaw(DiaryWidget),
     page: `/${WidgetType.diary}`,
   },
 ]);

@@ -9,7 +9,8 @@
     "baseUrl": ".",
     "paths": {
       "~/*": ["./*"],
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "#imports": ["./.nuxt/imports"]
     },
     "types": ["vite/client", "@types/node"]
   },

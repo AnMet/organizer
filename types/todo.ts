@@ -1,12 +1,20 @@
 export const TodoStatus = {
-  later: "later",
-  next: "next",
-  urgent: "urgent",
   doing: "doing",
+  urgent: "urgent",
+  next: "next",
+  later: "later",
   done: "done",
 } as const;
 
-export type TodoStatusType = (typeof TodoStatus)[keyof typeof TodoStatus];
+export const statusOrder = {
+  doing: 1,
+  urgent: 2,
+  next: 3,
+  later: 4,
+  done: 5,
+};
+
+export type TodoStatusType = keyof typeof TodoStatus;
 
 export interface Todo {
   id: string;

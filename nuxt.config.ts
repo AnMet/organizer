@@ -13,13 +13,17 @@ export default defineNuxtConfig({
   modules: ["@pinia/nuxt"],
   imports: {
     dirs: ["stores"], // ✅ Auto-import Pinia stores
+    autoImport: true,
   },
   alias: {
-    "~": "./",
-    "@": "./",
+    "~": fileURLToPath(new URL("./", import.meta.url)),
+    "@": fileURLToPath(new URL("./", import.meta.url)),
   },
   build: {
     transpile: ["vuetify"], // ✅ Transpile Vuetify for SSR
+  },
+  typescript: {
+    typeCheck: true,
   },
   vite: {
     plugins: [
