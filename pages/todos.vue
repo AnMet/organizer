@@ -127,34 +127,34 @@ function deleteTodo(id: string) {
 
             <v-list density="compact" class="mb-4">
               <v-list-item>
-                <v-list-item-content>
+                <div>
                   🟢 <strong class="text-primary">doing</strong> — tasks you're
                   actively working on
-                </v-list-item-content>
+                </div>
               </v-list-item>
               <v-list-item>
-                <v-list-item-content>
+                <div>
                   🔴 <strong class="text-error">urgent</strong> — tasks that
                   need immediate attention
-                </v-list-item-content>
+                </div>
               </v-list-item>
               <v-list-item>
-                <v-list-item-content>
+                <div>
                   🔵 <strong class="text-info">next</strong> — tasks coming up
                   soon
-                </v-list-item-content>
+                </div>
               </v-list-item>
               <v-list-item>
-                <v-list-item-content>
+                <div>
                   🟠 <strong class="text-warning">later</strong> — tasks for the
                   future
-                </v-list-item-content>
+                </div>
               </v-list-item>
               <v-list-item>
-                <v-list-item-content>
+                <div>
                   ⚫ <strong class="text-disabled">done</strong> — completed
                   tasks
-                </v-list-item-content>
+                </div>
               </v-list-item>
             </v-list>
 
