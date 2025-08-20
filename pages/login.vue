@@ -12,7 +12,7 @@ async function handleLogin() {
   const user = await useLogin(email.value, password.value);
   if (user) {
     message.value = "✅ Logged in!";
-    router.push("/todo"); // or wherever you want to go
+    router.push("/");
   } else {
     message.value = "❌ Login failed";
   }

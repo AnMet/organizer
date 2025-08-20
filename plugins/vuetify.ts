@@ -14,29 +14,31 @@ export default defineNuxtPlugin((nuxtApp) => {
         light: {
           dark: false,
           colors: {
-            background: "#FDF6F0", // soft cream
-            surface: "#FFFFFF",
-            primary: "#A3BFF2", // pastel blue
-            secondary: "#D8B4F8", // pastel purple
-            accent: "#FDE68A", // pastel yellow
-            info: "#93C5FD",
-            success: "#A7F3D0",
-            warning: "#FCD34D",
-            error: "#FCA5A5",
+            background: "#f9f9f9",
+            surface: "#ffffff",
+            primary: "#1976d2",
+            secondary: "#424242",
+            error: "#d32f2f",
+            info: "#0288d1",
+            success: "#388e3c",
+            warning: "#f57c00",
+            onPrimary: "#ffffff",
+            onBackground: "#1e1e1e",
           },
         },
         dark: {
           dark: true,
           colors: {
-            background: "#0B0F1A", // deep space blue
-            surface: "#1A1F2B", // galaxy shadow
-            primary: "#7F5AF0", // cosmic violet
-            secondary: "#5BC0BE", // nebula teal
-            accent: "#F4D35E", // star yellow
-            info: "#3ABFF8",
-            success: "#2EC4B6",
-            warning: "#FF9F1C",
-            error: "#E63946",
+            background: "#121212",
+            surface: "#1e1e1e",
+            primary: "#90caf9",
+            secondary: "#eeeeee",
+            error: "#ef9a9a",
+            info: "#81d4fa",
+            success: "#a5d6a7",
+            warning: "#ffcc80",
+            onPrimary: "#000000",
+            onBackground: "#ffffff",
           },
         },
       },

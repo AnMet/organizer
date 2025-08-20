@@ -51,21 +51,27 @@ async function handleLogout() {
       </v-btn>
 
       <!-- User/Login Icon -->
-      <v-btn
-        text
-        class="ml-4"
-        v-if="user?.email"
-        @click="handleLogout"
-        :style="{ color: toolbarTextColor }"
-      >
-        Log out
-      </v-btn>
-
-      <router-link v-else to="/auth">
-        <v-btn icon :title="'User Profile'">
-          <v-icon :color="toolbarTextColor">mdi-account-circle</v-icon>
+      <client-only>
+        <v-btn
+          text
+          class="ml-4"
+          v-if="user?.email"
+          @click="handleLogout"
+          :style="{ color: toolbarTextColor }"
+        >
+          Log out
         </v-btn>
-      </router-link>
+
+        <v-btn
+          icon
+          v-if="user?.email"
+          :title="'User Profile'"
+          :to="'/auth'"
+          :style="{ color: toolbarTextColor }"
+        >
+          <v-icon :color="toolbarTextColor">mdi-account-circle</v-icon>
+        </v-btn></client-only
+      >
     </v-app-bar>
 
     <!-- Main Content -->

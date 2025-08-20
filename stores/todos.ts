@@ -1,23 +1,153 @@
 import { defineStore } from "pinia";
-import { type Todo } from "../types";
+import type { Todo } from "~/types";
+import { stripEmptyFields } from "~/utils/sanitize";
+import { supabase } from "~/utils/supabaseClient";
 
-export const useTodoStore = defineStore("todos", {
+export const useTodoStore = defineStore("todo", {
   state: () => ({
     todos: [] as Todo[],
   }),
+
   actions: {
-    addTodo(todo: Todo) {
-      this.todos.push(todo);
-    },
-    updateTodo(updated: Partial<Todo> & { id: string }) {
-      const todo = this.todos.find((t) => t.id === updated.id);
-      if (todo) {
-        Object.assign(todo, updated);
-        todo.updated_at = new Date().toISOString();
+    async seedTodos(userId: string): Promise<boolean> {
+      const { data: meta, error: metaError } = await supabase
+        .from("user_metadata")
+        .select("seeded")
+        .eq("user_id", userId)
+        .single();
+
+      if (metaError && metaError.code !== "PGRST116") {
+        console.error("❌ Error checking seed status:", metaError);
+        return false;
       }
+
+      if (meta?.seeded) {
+        console.log("⏭️ Already seeded. Fetching todos.");
+        await this.fetchTodos(userId);
+        return true;
+      }
+
+      const todosToInsert: Omit<Todo, "id" | "created_at" | "updated_at">[] = [
+        {
+          user_id: userId,
+          title: "Plan the day",
+          description: "Review calendar and prioritize tasks",
+          status: "next",
+        },
+        {
+          user_id: userId,
+          title: "Check emails",
+          description: "Respond to urgent messages and archive spam",
+          status: "doing",
+        },
+        {
+          user_id: userId,
+          title: "Take a walk",
+          description: "Short walk to refresh and reset focus",
+          status: "later",
+        },
+        {
+          user_id: userId,
+          title: "Read something inspiring",
+          description: "10 minutes of a book, article, or quote",
+          status: "later",
+        },
+      ];
+
+      const { data, error } = await supabase
+        .from("todos")
+        .insert(todosToInsert)
+        .select();
+
+      if (error || !data) {
+        console.error("❌ Seeding error:", error);
+        return false;
+      }
+
+      const { error: updateError } = await supabase
+        .from("user_metadata")
+        .upsert({ user_id: userId, seeded: true });
+
+      if (updateError) {
+        console.error("❌ Error updating seed status:", updateError);
+        return false;
+      }
+
+      this.todos = data;
+      console.log("✅ Seeded and todos loaded");
+      return true;
     },
-    removeTodo(id: string) {
-      this.todos = this.todos.filter((t: Todo) => t.id !== id);
+
+    async fetchTodos(userId: string) {
+      const { data, error } = await supabase
+        .from("todos")
+        .select("*")
+        .eq("user_id", userId);
+
+      if (error) {
+        console.error("❌ Error fetching todos:", error);
+        return;
+      }
+
+      this.todos = data || [];
+    },
+
+    async addTodo(newTodo: Omit<Todo, "id" | "created_at" | "updated_at">) {
+      const cleanTodo = stripEmptyFields(newTodo);
+
+      const { data, error } = await supabase
+        .from("todos")
+        .insert(cleanTodo)
+        .select()
+        .single();
+
+      if (error || !data) {
+        console.error("❌ Error adding todo:", error);
+        return null;
+      }
+
+      this.todos.push(data);
+      console.log("✅ Todo added:", data);
+      return data;
+    },
+
+    async updateTodo(updated: Partial<Todo> & { id: string }) {
+      const todo = this.todos.find((t) => t.id === updated.id);
+      if (todo) Object.assign(todo, updated);
+
+      const payload = {
+        ...updated,
+        updated_at: new Date().toISOString(),
+      };
+
+      const cleanPayload = stripEmptyFields(payload);
+
+      const { data, error } = await supabase
+        .from("todos")
+        .update(cleanPayload)
+        .eq("id", updated.id)
+        .select()
+        .single();
+
+      if (error) {
+        console.error("❌ Error updating todo:", error);
+        return null;
+      }
+
+      console.log("✅ Todo updated in DB:", data);
+      return data;
+    },
+
+    async deleteTodo(id: string) {
+      const { error } = await supabase.from("todos").delete().eq("id", id);
+
+      if (error) {
+        console.error("❌ Error deleting todo:", error);
+        return false;
+      }
+
+      this.todos = this.todos.filter((t) => t.id !== id);
+      return true;
     },
   },
 });

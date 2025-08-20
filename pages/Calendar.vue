@@ -5,6 +5,7 @@ import { useCalendarStore } from "~/stores/calendar";
 import {
   dateFormatOptions,
   localeOptions,
+  SnackbarType,
   timezoneOptions,
   type DateFormatType,
   type LocaleCode,
@@ -18,7 +19,7 @@ const selectedFormat = ref<DateFormatType>(store.$state.format);
 const selectedLocale = ref<LocaleCode>(store.$state.locale);
 
 const currentDateTime = ref(new Date());
-const showToast = ref(false);
+const showModifConfirm = ref(false);
 
 // Live preview based on current selections
 const formattedDateTime = computed(() =>
@@ -46,8 +47,7 @@ function saveSettings() {
   store.setTimezone(selectedTimezone.value);
   store.setFormat(selectedFormat.value);
   store.setLocale(selectedLocale.value);
-  showToast.value = true;
-  setTimeout(() => (showToast.value = false), 3000);
+  showModifConfirm.value = true;
 }
 
 onMounted(() => {
@@ -151,15 +151,12 @@ onMounted(() => {
       </v-col>
     </v-row>
 
-    <!-- ✅ Toast Notification -->
-    <v-snackbar
-      v-model="showToast"
-      color="success"
-      timeout="3000"
-      location="bottom right"
-    >
-      ✅ Modifications saved
-    </v-snackbar>
+    <!-- ✅  Notification -->
+    <AppSnackbar
+      v-model="showModifConfirm"
+      message="Modifications saved."
+      :type="SnackbarType.success"
+    />
   </v-container>
 </template>
 

@@ -66,4 +66,6 @@ export async function useSeedTodos(userId: string) {
 
   console.log("✅ Seeded todos:", data);
   return true;
+
+  // Step 5: Put all todos in store
 }

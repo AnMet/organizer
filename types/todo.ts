@@ -22,6 +22,22 @@ export interface Todo {
   title: string;
   description?: string;
   status: TodoStatusType;
-  created_at: string;
-  updated_at: string;
+  created_at?: string;
+  updated_at?: string;
 }
+
+export const statusColor: Record<TodoStatusType, string> = {
+  [TodoStatus.doing]: "green",
+  [TodoStatus.urgent]: "red",
+  [TodoStatus.next]: "primary",
+  [TodoStatus.later]: "orange",
+  [TodoStatus.done]: "grey",
+};
+
+export const statusDescriptions: Record<TodoStatusType, string> = {
+  doing: "tasks you're actively working on",
+  urgent: "tasks that need immediate attention",
+  next: "tasks coming up soon",
+  later: "tasks for the future",
+  done: "completed tasks",
+};

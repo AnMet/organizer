@@ -1,6 +1,8 @@
 export * from "./book";
 export * from "./calendar";
 export * from "./todo";
+export * from "./ui";
+
 
 export const WidgetType = {
   todos: "todos",
