@@ -12,6 +12,8 @@ const router = useRouter();
 const loading = ref(true);
 const store = useTodoStore();
 
+const userId = ref("");
+
 onMounted(async () => {
   const { data, error } = await supabase.auth.getUser();
 
@@ -21,10 +23,10 @@ onMounted(async () => {
     return;
   }
 
-  const userId = data.user.id;
+  userId.value = data.user.id;
 
   // Seed todos
-  await store.seedTodos(userId);
+  await store.seedTodos(userId.value);
 
   loading.value = false;
 });
@@ -42,6 +44,12 @@ const selectedTodo = ref<Todo | null>(null);
 function openEditDialog(todo: Todo | null) {
   selectedTodo.value = todo;
   dialogOpen.value = true;
+}
+
+async function generateTodos() {
+  loading.value = true;
+  await store.seedTodos(userId.value, true);
+  loading.value = false;
 }
 </script>
 
@@ -107,9 +115,22 @@ function openEditDialog(todo: Todo | null) {
           colored-border
         >
           <strong>No tasks found.</strong><br />
-          You haven’t added any tasks yet — but it’s a great time to start! ✨
-          <br />📝 Create your first task and take control of your day!</v-alert
-        >
+          You haven’t added any tasks yet — but it’s a great time to start!
+          ✨<br />
+          📝 Create your first task and take control of your day!<br /><br />
+
+          <div>
+            Or let us help you get started with some default tasks:
+            <v-btn
+              color="primary"
+              size="small"
+              class="mt-2"
+              @click="generateTodos"
+            >
+              Generate Sample Tasks
+            </v-btn>
+          </div>
+        </v-alert>
       </div>
 
       <!-- Todo edit dialogue -->

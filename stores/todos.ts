@@ -8,22 +8,24 @@ export const useTodoStore = defineStore("todo", {
   }),
 
   actions: {
-    async seedTodos(userId: string): Promise<boolean> {
-      const { data: meta, error: metaError } = await supabase
-        .from("user_metadata")
-        .select("seeded")
-        .eq("user_id", userId)
-        .single();
+    async seedTodos(userId: string, force?: boolean): Promise<boolean> {
+      if (!force) {
+        const { data: meta, error: metaError } = await supabase
+          .from("user_metadata")
+          .select("seeded")
+          .eq("user_id", userId)
+          .single();
 
-      if (metaError && metaError.code !== "PGRST116") {
-        console.error("❌ Error checking seed status:", metaError);
-        return false;
-      }
+        if (metaError && metaError.code !== "PGRST116") {
+          console.error("❌ Error checking seed status:", metaError);
+          return false;
+        }
 
-      if (meta?.seeded) {
-        console.log("⏭️ Already seeded. Fetching todos.");
-        await this.fetchTodos(userId);
-        return true;
+        if (meta?.seeded) {
+          console.log("⏭️ Already seeded. Fetching todos.");
+          await this.fetchTodos(userId);
+          return true;
+        }
       }
 
       const todosToInsert: Omit<Todo, "id" | "created_at" | "updated_at">[] = [
@@ -63,13 +65,15 @@ export const useTodoStore = defineStore("todo", {
         return false;
       }
 
-      const { error: updateError } = await supabase
-        .from("user_metadata")
-        .upsert({ user_id: userId, seeded: true });
+      if (!force) {
+        const { error: updateError } = await supabase
+          .from("user_metadata")
+          .upsert({ user_id: userId, seeded: true });
 
-      if (updateError) {
-        console.error("❌ Error updating seed status:", updateError);
-        return false;
+        if (updateError) {
+          console.error("❌ Error updating seed status:", updateError);
+          return false;
+        }
       }
 
       this.todos = data;
