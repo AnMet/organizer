@@ -19,7 +19,6 @@ const dialog = computed({
 
 const confirmDeleteDialog = ref(false);
 const showDeletionConfirm = ref(false);
-const createNew = computed(() => !props.id);
 
 // Get current user once
 const {
@@ -78,40 +77,10 @@ async function saveTodo() {
 
   todo.value.user_id = userId;
 
-  if (createNew.value) {
-    // Destructure only the fields you want to insert
-    const { user_id, title, description, status } = todo.value;
-
-    const { data, error } = await supabase
-      .from("todos")
-      .insert([{ user_id, title, description, status }]) // ✅ wrap in array
-      .select()
-      .single();
-
-    if (error) {
-      console.error("Insert error:", error);
-      return;
-    }
-
-    await store.addTodo(data);
+  if (!props.id) {
+    await store.addTodo(todo.value);
   } else {
-    const { data, error } = await supabase
-      .from("todos")
-      .update({
-        title: todo.value.title,
-        description: todo.value.description,
-        status: todo.value.status,
-      })
-      .eq("id", props.id)
-      .select()
-      .single();
-
-    if (error) {
-      console.error("Update error:", error);
-      return;
-    }
-
-    await store.updateTodo(data);
+    await store.updateTodo(todo.value, props.id!);
   }
 
   dialog.value = false;
@@ -142,7 +111,7 @@ async function performDelete() {
       <v-card-title
         class="d-flex justify-space-between align-center bg-primary text-white"
       >
-        {{ createNew ? "Create Todo" : "Edit Todo" }}
+        {{ !props.id ? "Create a new task" : "Edit the task" }}
 
         <div>
           <!--  v-if="isDraft" -->
@@ -174,13 +143,13 @@ async function performDelete() {
       </v-card-text>
 
       <v-card-actions class="mx-4 mb-2">
-        <v-btn v-if="!createNew" color="error" @click="requestDelete">
+        <v-btn v-if="props.id" color="error" @click="requestDelete">
           <v-icon size="18" class="mr-1">mdi-trash-can</v-icon> Delete
         </v-btn>
         <v-spacer />
         <v-btn color="primary" :disabled="!todo.title.trim()" @click="saveTodo">
           <v-icon size="18" class="mr-1">mdi-content-save</v-icon>
-          {{ createNew ? "Create" : "Save" }}
+          {{ !props.id ? "Create" : "Save" }}
         </v-btn>
       </v-card-actions>
     </v-card>

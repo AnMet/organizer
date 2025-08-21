@@ -39,7 +39,7 @@ const sortedTodos = computed(() =>
 const dialogOpen = ref(false);
 const selectedTodo = ref<Todo | null>(null);
 
-function openEditDialog(todo: Todo) {
+function openEditDialog(todo: Todo | null) {
   selectedTodo.value = todo;
   dialogOpen.value = true;
 }
@@ -58,7 +58,7 @@ function openEditDialog(todo: Todo) {
 
       <!-- Add new todo button -->
       <div class="d-flex">
-        <v-btn class="mx-auto mb-3" @click="openEditDialog({} as Todo)">
+        <v-btn class="mx-auto mb-3" @click="openEditDialog(null)">
           <v-icon class="mr-1">mdi-plus</v-icon>
           Add new task
         </v-btn>
@@ -99,7 +99,17 @@ function openEditDialog(todo: Todo) {
         </v-card>
       </div>
       <div v-else>
-        <p>No todos found.</p>
+        <v-alert
+          variant="tonal"
+          type="info"
+          border="start"
+          elevation="2"
+          colored-border
+        >
+          <strong>No tasks found.</strong><br />
+          You haven’t added any tasks yet — but it’s a great time to start! ✨
+          <br />📝 Create your first task and take control of your day!</v-alert
+        >
       </div>
 
       <!-- Todo edit dialogue -->

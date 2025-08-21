@@ -1,6 +1,5 @@
 import { defineStore } from "pinia";
 import type { Todo } from "~/types";
-import { stripEmptyFields } from "~/utils/sanitize";
 import { supabase } from "~/utils/supabaseClient";
 
 export const useTodoStore = defineStore("todo", {
@@ -93,11 +92,9 @@ export const useTodoStore = defineStore("todo", {
     },
 
     async addTodo(newTodo: Omit<Todo, "id" | "created_at" | "updated_at">) {
-      const cleanTodo = stripEmptyFields(newTodo);
-
       const { data, error } = await supabase
         .from("todos")
-        .insert(cleanTodo)
+        .insert([newTodo])
         .select()
         .single();
 
@@ -106,13 +103,20 @@ export const useTodoStore = defineStore("todo", {
         return null;
       }
 
-      this.todos.push(data);
+      this.todos = [...this.todos, data];
       console.log("✅ Todo added:", data);
       return data;
     },
+    async updateTodo(
+      updated: Omit<Todo, "id" | "created_at" | "updated_at">,
+      id: string
+    ) {
+      if (!id) {
+        console.error("❌ Missing ID for update");
+        return null;
+      }
 
-    async updateTodo(updated: Partial<Todo> & { id: string }) {
-      const todo = this.todos.find((t) => t.id === updated.id);
+      const todo = this.todos.find((t) => t.id === id);
       if (todo) Object.assign(todo, updated);
 
       const payload = {
@@ -120,12 +124,10 @@ export const useTodoStore = defineStore("todo", {
         updated_at: new Date().toISOString(),
       };
 
-      const cleanPayload = stripEmptyFields(payload);
-
       const { data, error } = await supabase
         .from("todos")
-        .update(cleanPayload)
-        .eq("id", updated.id)
+        .update(payload)
+        .eq("id", id)
         .select()
         .single();
 
@@ -137,7 +139,6 @@ export const useTodoStore = defineStore("todo", {
       console.log("✅ Todo updated in DB:", data);
       return data;
     },
-
     async deleteTodo(id: string) {
       const { error } = await supabase.from("todos").delete().eq("id", id);
 
@@ -147,6 +148,17 @@ export const useTodoStore = defineStore("todo", {
       }
 
       this.todos = this.todos.filter((t) => t.id !== id);
+
+      // ✅ If no todos left, reset the sequence
+      if (this.todos.length === 0) {
+        const { error: seqError } = await supabase.rpc("reset_todos_sequence");
+        if (seqError) {
+          console.error("❌ Error resetting sequence:", seqError);
+        } else {
+          console.log("🔄 Sequence reset after full deletion");
+        }
+      }
+
       return true;
     },
   },

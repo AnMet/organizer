@@ -4,6 +4,7 @@
     timeout="3000"
     location="bottom right"
     :color="type"
+    variant="tonal"
   >
     <span class="me-2">{{ messageIcons[type] }}</span> {{ message }}
   </v-snackbar>
