@@ -6,15 +6,15 @@ export const TodoStatus = {
   done: "done",
 } as const;
 
-export const statusOrder = {
+export type TodoStatusType = keyof typeof TodoStatus;
+
+export const statusOrder: Record<TodoStatusType, number> = {
   doing: 1,
   urgent: 2,
   next: 3,
   later: 4,
   done: 5,
 };
-
-export type TodoStatusType = keyof typeof TodoStatus;
 
 export interface Todo {
   id: string;

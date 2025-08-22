@@ -31,7 +31,6 @@ onMounted(async () => {
   loading.value = false;
 });
 
-// ✅ Use store.todos instead of local todos
 const sortedTodos = computed(() =>
   store.todos.slice().sort((a, b) => {
     return statusOrder[a.status] - statusOrder[b.status];

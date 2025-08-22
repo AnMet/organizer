@@ -13,7 +13,7 @@ import { WidgetType, type DashboardWidget } from "~/types";
 const widgets = ref<DashboardWidget[]>([
   {
     type: WidgetType.todos,
-    title: "🧭 Todo list",
+    title: "🧭 Daily Planner",
     component: markRaw(TodosWidget),
     page: `/${WidgetType.todos}`,
   },

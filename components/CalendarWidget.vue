@@ -26,19 +26,19 @@ onMounted(() => {
   <v-card class="pa-4" elevation="1" color="grey-lighten-4">
     <client-only>
       <v-row align="center">
-        <v-col cols="12" md="5">
+        <v-col cols="12" sm="4">
           <div class="text-body-1 font-weight-medium">
             {{ formattedDateTime.date }}
           </div>
         </v-col>
 
-        <v-col cols="12" md="2">
+        <v-col cols="12" sm="4">
           <div class="text-body-1 font-weight-medium">
             {{ formattedDateTime.time }}
           </div>
         </v-col>
 
-        <v-col cols="12" md="5" class="d-flex align-center">
+        <v-col cols="12" sm="4" class="d-flex align-center">
           <span class="mr-1" style="font-size: 1rem">🌍</span>
           <div class="text-body-1 font-weight-medium">
             {{ store.$state.timezone }}

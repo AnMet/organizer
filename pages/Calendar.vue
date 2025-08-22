@@ -142,7 +142,10 @@ onMounted(() => {
             <div>
               Local:
               {{
-                localeOptions.find((opt) => opt.value === selectedLocale)?.label
+                localeOptions.find(
+                  (opt: { value: string; label: string }) =>
+                    opt.value === selectedLocale
+                )?.label
               }}
             </div>
             <div>Format: {{ selectedFormat }}</div>
