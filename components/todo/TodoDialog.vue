@@ -3,7 +3,7 @@ import { computed, ref, watch } from "vue";
 import { useTodoStore } from "~/stores/todos";
 import { SnackbarType, TodoStatus, type Todo } from "~/types";
 import { supabase } from "~/utils/supabaseClient";
-import AppSnackbar from "./ui/AppSnackbar.vue";
+import AppSnackbar from "../ui/AppSnackbar.vue";
 
 const props = defineProps<{
   id?: string;

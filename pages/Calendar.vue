@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
+import { useAuthGuard } from "~/composables/useAuthGuard";
 import { formatDateTimeParts } from "~/composables/useCalendar";
 import { useCalendarStore } from "~/stores/calendar";
 import {
@@ -20,6 +21,13 @@ const selectedLocale = ref<LocaleCode>(store.$state.locale);
 
 const currentDateTime = ref(new Date());
 const showModifConfirm = ref(false);
+
+const { loading, userId } = useAuthGuard();
+
+onMounted(() => {
+  updateTime();
+  setInterval(updateTime, 60000);
+});
 
 // Live preview based on current selections
 const formattedDateTime = computed(() =>
@@ -49,16 +57,13 @@ function saveSettings() {
   store.setLocale(selectedLocale.value);
   showModifConfirm.value = true;
 }
-
-onMounted(() => {
-  updateTime();
-  setInterval(updateTime, 60000);
-});
 </script>
 
 <template>
   <v-container>
-    <v-row>
+    <FullscreenLoader v-if="loading" />
+
+    <v-row v-else>
       <v-col cols="12">
         <h2>📅 Calendar Settings</h2>
       </v-col>

@@ -4,14 +4,25 @@ Galaxy UI is a customizable, drag-and-drop dashboard built with Vue 3 and Vuetif
 
 ---
 
-## 🚀 Features
+# Organizer 🪐
 
-- 🧩 **Drag-and-Drop Layout** — Rearrange widgets freely using `vue-draggable`
-- 📔 **Diary Widget** — Write entries, add photos, emojis, and (soon) GIFs
-- 📅 **Calendar & Tasks** — Stay organized with visual scheduling
-- 📝 **Notes & Books** — Track ideas and reading lists
-- 🌤️ **Weather Widget** — Display current conditions
-- 🎨 **Responsive Design** — Mobile-friendly and beautiful
+**Organizer** is a personal productivity web app built with Nuxt 3 and Vuetify 3. It blends functionality with aesthetic design, offering a dual-theme experience: a soft pastel light mode for daytime clarity, and a cosmic galaxy dark mode for nighttime focus.
+
+This app helps you manage tasks, schedule events, track your reading, and stay updated with the weather—all in a clean, responsive interface. Whether you're planning your week or capturing spontaneous ideas, Organizer is designed to keep you inspired and organized.
+
+## ✨ Features
+
+- 🧭 **Smart task management** with categories, tags & priorities
+- 📅 **Intuitive calendar view** for planning your days
+- 📅 **Intuitive calendar view** for planning your days
+- 📓 **Diary with markdown support** for expressive journaling
+- 📚 **Personal reading tracker** to log and rate your books
+- 🌤️ **Live weather widget** for daily context-aware planning
+- 🎨 **Dual theme system**: pastel light & galaxy dark modes
+- 📱 **Fully responsive design** for mobile, tablet & desktop
+- 🔔 **Reminders & notifications** to stay on top of your goals
+- 🔒 **Secure authentication** powered by Supabase
+- ## 🚀 **Fast & optimized** for smooth user experience
 
 ---
 

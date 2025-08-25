@@ -4,16 +4,16 @@ import draggable from "vuedraggable";
 
 import BooksWidget from "~/components/BooksWidget.vue";
 import CalendarWidget from "~/components/CalendarWidget.vue";
-import DiaryWidget from "~/components/DiaryWidget.vue";
+import DiaryWidget from "~/components/diary/DiaryWidget.vue";
 import NotesWidget from "~/components/NotesWidget.vue";
-import TodosWidget from "~/components/TodosWidget.vue";
+import TodosWidget from "~/components/todo/TodosWidget.vue";
 import WeatherWidget from "~/components/WeatherWidget.vue";
 import { WidgetType, type DashboardWidget } from "~/types";
 
 const widgets = ref<DashboardWidget[]>([
   {
     type: WidgetType.todos,
-    title: "🧭 Daily Planner",
+    title: "🧭 Task manager",
     component: markRaw(TodosWidget),
     page: `/${WidgetType.todos}`,
   },

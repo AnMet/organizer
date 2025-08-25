@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import {
+  dateFormat,
   type DateFormatType,
   type LocaleCode,
   type TimezoneCode,
@@ -8,7 +9,7 @@ import {
 export const useCalendarStore = defineStore("calendar", {
   state: () => ({
     timezone: "Europe/Paris" as TimezoneCode,
-    format: "long" as DateFormatType,
+    format: dateFormat.long as DateFormatType,
     locale: "fr-FR" as LocaleCode,
   }),
   actions: {

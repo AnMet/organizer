@@ -1,18 +1,5 @@
-# Organizer 🪐
 
-**Organizer** is a personal productivity web app built with Nuxt 3 and Vuetify 3. It blends functionality with aesthetic design, offering a dual-theme experience: a soft pastel light mode for daytime clarity, and a cosmic galaxy dark mode for nighttime focus.
 
-This app helps you manage tasks, schedule events, track your reading, and stay updated with the weather—all in a clean, responsive interface. Whether you're planning your week or capturing spontaneous ideas, Organizer is designed to keep you inspired and organized.
-
-## ✨ Features
-
-- 🧭 Task management with categories and tags
-- 📅 Calendar view for scheduling
-- 📝 Notes section with markdown support
-- 📚 Books list to track your reading journey
-- 🌤️ Weather widget for daily planning
-- 🎨 Dual theme system: pastel light & galaxy dark
-- 📱 Fully responsive design
 
 
 

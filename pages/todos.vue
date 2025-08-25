@@ -1,34 +1,20 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
-import FullscreenLoader from "~/components/FullscreenLoader.vue";
-import TodoDialog from "~/components/TodoDialog.vue";
-import TodoPageDescription from "~/components/TodoPageDescription.vue";
+import { computed, ref, watch } from "vue";
+import TodoDialog from "~/components/todo/TodoDialog.vue";
+import TodoPageDescription from "~/components/todo/TodoPageDescription.vue";
+import FullscreenLoader from "~/components/ui/FullscreenLoader.vue";
+import InfoPanel from "~/components/ui/InfoPanel.vue";
+import { useAuthGuard } from "~/composables/useAuthGuard";
 import { useTodoStore } from "~/stores/todos";
 import { statusColor, statusOrder, type Todo } from "~/types";
-import { supabase } from "~/utils/supabaseClient";
 
-const router = useRouter();
-const loading = ref(true);
 const store = useTodoStore();
 
-const userId = ref("");
+const { loading, userId } = useAuthGuard();
 
-onMounted(async () => {
-  const { data, error } = await supabase.auth.getUser();
-
-  if (error || !data.user) {
-    loading.value = false;
-    router.push("/login");
-    return;
-  }
-
-  userId.value = data.user.id;
-
-  // Seed todos
-  await store.seedTodos(userId.value);
-
-  loading.value = false;
+// Seed todos
+watch(userId, async (id) => {
+  if (id) await store.seedTodos(userId.value);
 });
 
 const sortedTodos = computed(() =>
@@ -58,10 +44,12 @@ async function generateTodos() {
 
     <div v-else>
       <!-- Page title -->
-      <h1 class="text-h4 mb-4">🚀 Todos</h1>
+      <h1 class="text-h4 mb-4">🚀 My Task manager</h1>
 
       <!-- Description -->
-      <TodoPageDescription />
+      <InfoPanel title="How this page works">
+        <TodoPageDescription />
+      </InfoPanel>
 
       <!-- Add new todo button -->
       <div class="d-flex">

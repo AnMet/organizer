@@ -42,7 +42,7 @@ function taskLabel(count: number) {
       >
         {{ status }}
       </v-chip>
-      <span class="ml-1"> - {{ count }} {{ taskLabel(count) }}</span>
+      <span class="ml-1"> {{ count }} {{ taskLabel(count) }}</span>
     </div>
   </div>
 
