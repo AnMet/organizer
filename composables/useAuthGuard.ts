@@ -1,24 +1,22 @@
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import { supabase } from "~/utils/supabaseClient";
+import { useAuth } from "~/composables/useAuth";
 
-export function useAuthGuard() {
+export const useAuthGuard = (redirectPath = "/login") => {
   const router = useRouter();
   const loading = ref(true);
-  const userId = ref("");
+  const userId = ref<string | null>(null);
 
   onMounted(async () => {
-    const { data, error } = await supabase.auth.getUser();
-
-    if (error || !data.user) {
+    try {
+      const { getCurrentUserId } = useAuth();
+      userId.value = await getCurrentUserId();
+    } catch (err) {
+      router.push(redirectPath);
+    } finally {
       loading.value = false;
-      router.push("/login");
-      return;
     }
-
-    userId.value = data.user.id;
-    loading.value = false;
   });
 
   return { loading, userId };
-}
+};

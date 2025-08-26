@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
-import type { Todo } from "~/types";
+import { SnackbarType, type Todo } from "~/types";
+import { notify } from "~/utils/notify";
 import { supabase } from "~/utils/supabaseClient";
 
 export const useTodoStore = defineStore("todo", {
@@ -62,6 +63,10 @@ export const useTodoStore = defineStore("todo", {
 
       if (error || !data) {
         console.error("❌ Seeding error:", error);
+        notify(
+          "Something went wrong duting task generation, please try later",
+          SnackbarType.error
+        );
         return false;
       }
 
@@ -72,15 +77,20 @@ export const useTodoStore = defineStore("todo", {
 
         if (updateError) {
           console.error("❌ Error updating seed status:", updateError);
+          notify(
+            "Something went wrong duting task generation, please try later",
+            SnackbarType.error
+          );
+
           return false;
         }
       }
 
       this.todos = data;
       console.log("✅ Seeded and todos loaded");
+      notify("Sample tasks generated", SnackbarType.success);
       return true;
     },
-
     async fetchTodos(userId: string) {
       const { data, error } = await supabase
         .from("todos")
@@ -89,12 +99,15 @@ export const useTodoStore = defineStore("todo", {
 
       if (error) {
         console.error("❌ Error fetching todos:", error);
+        notify(
+          "Something went wrong while getting tasks, please try later",
+          SnackbarType.error
+        );
         return;
       }
 
       this.todos = data || [];
     },
-
     async addTodo(newTodo: Omit<Todo, "id" | "created_at" | "updated_at">) {
       const { data, error } = await supabase
         .from("todos")
@@ -104,11 +117,16 @@ export const useTodoStore = defineStore("todo", {
 
       if (error || !data) {
         console.error("❌ Error adding todo:", error);
+        notify(
+          "Something went wrong while adding a new tasks, please try later",
+          SnackbarType.error
+        );
         return null;
       }
 
       this.todos = [...this.todos, data];
       console.log("✅ Todo added:", data);
+      notify("Todo added", SnackbarType.success);
       return data;
     },
     async updateTodo(
@@ -117,6 +135,10 @@ export const useTodoStore = defineStore("todo", {
     ) {
       if (!id) {
         console.error("❌ Missing ID for update");
+        notify(
+          "Something went wrong while updating a tasks, please try later",
+          SnackbarType.error
+        );
         return null;
       }
 
@@ -137,10 +159,15 @@ export const useTodoStore = defineStore("todo", {
 
       if (error) {
         console.error("❌ Error updating todo:", error);
+        notify(
+          "Something went wrong while updating a tasks, please try later",
+          SnackbarType.error
+        );
         return null;
       }
 
-      console.log("✅ Todo updated in DB:", data);
+      console.log("✅ Todo updated:", data);
+      notify("Todo updated", SnackbarType.success);
       return data;
     },
     async deleteTodo(id: string) {
@@ -148,16 +175,25 @@ export const useTodoStore = defineStore("todo", {
 
       if (error) {
         console.error("❌ Error deleting todo:", error);
+        notify(
+          "Something went wrong while deleting a tasks, please try later",
+          SnackbarType.error
+        );
         return false;
       }
 
       this.todos = this.todos.filter((t) => t.id !== id);
+      notify("Task deleted", SnackbarType.success);
 
       // ✅ If no todos left, reset the sequence
       if (this.todos.length === 0) {
         const { error: seqError } = await supabase.rpc("reset_todos_sequence");
         if (seqError) {
           console.error("❌ Error resetting sequence:", seqError);
+          notify(
+            "Something went wrong while deleting a tasks, please try later",
+            SnackbarType.error
+          );
         } else {
           console.log("🔄 Sequence reset after full deletion");
         }

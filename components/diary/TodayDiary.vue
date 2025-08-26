@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { formatDateTimeParts } from "~/composables/useCalendar";
 import { useCalendarStore } from "~/stores/calendar";
 import { useDiaryStore } from "~/stores/diary";
 
 const calendarStore = useCalendarStore();
 const diaryStore = useDiaryStore();
+
+onMounted(() => {
+  title.value = diaryStore.dayTitle;
+});
 
 const datetime = computed(() =>
   formatDateTimeParts(
@@ -18,15 +22,7 @@ const datetime = computed(() =>
 
 // Diary fields
 const title = ref<string>("");
-const mood = ref("");
-const energy = ref("");
-const thoughts = ref("");
-const goal = ref("");
-const avoid = ref("");
-const win = ref("");
-const highlights = ref("");
-const gratitude = ref("");
-const notes = ref("");
+const moodTags = ref<string[]>([]); // todo type
 </script>
 
 <template>
@@ -41,6 +37,7 @@ const notes = ref("");
           variant="plain"
           hide-details
           class="text-subtitle-1 font-italic"
+          @blur="diaryStore.updateDayTitle(title)"
         />
       </div>
 

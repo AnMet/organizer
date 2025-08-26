@@ -12,9 +12,8 @@ const store = useTodoStore();
 
 const { loading, userId } = useAuthGuard();
 
-// Seed todos
 watch(userId, async (id) => {
-  if (id) await store.seedTodos(userId.value);
+  if (id) await store.seedTodos(id);
 });
 
 const sortedTodos = computed(() =>
@@ -32,9 +31,11 @@ function openEditDialog(todo: Todo | null) {
 }
 
 async function generateTodos() {
-  loading.value = true;
-  await store.seedTodos(userId.value, true);
-  loading.value = false;
+  if (userId.value) {
+    loading.value = true;
+    await store.seedTodos(userId.value, true);
+    loading.value = false;
+  }
 }
 </script>
 

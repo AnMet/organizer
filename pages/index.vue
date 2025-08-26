@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { markRaw, ref } from "vue";
+import { markRaw, onMounted, ref } from "vue";
 import draggable from "vuedraggable";
 
 import BooksWidget from "~/components/BooksWidget.vue";
@@ -8,7 +8,13 @@ import DiaryWidget from "~/components/diary/DiaryWidget.vue";
 import NotesWidget from "~/components/NotesWidget.vue";
 import TodosWidget from "~/components/todo/TodosWidget.vue";
 import WeatherWidget from "~/components/WeatherWidget.vue";
+import { useAuthStore } from "~/stores/auth";
 import { WidgetType, type DashboardWidget } from "~/types";
+
+onMounted(async () => {
+  const auth = useAuthStore();
+  await auth.fetchUser();
+});
 
 const widgets = ref<DashboardWidget[]>([
   {

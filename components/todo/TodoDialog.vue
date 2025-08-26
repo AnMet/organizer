@@ -2,8 +2,8 @@
 import { computed, ref, watch } from "vue";
 import { useTodoStore } from "~/stores/todos";
 import { SnackbarType, TodoStatus, type Todo } from "~/types";
+import { notify } from "~/utils/notify";
 import { supabase } from "~/utils/supabaseClient";
-import AppSnackbar from "../ui/AppSnackbar.vue";
 
 const props = defineProps<{
   id?: string;
@@ -18,7 +18,6 @@ const dialog = computed({
 });
 
 const confirmDeleteDialog = ref(false);
-const showDeletionConfirm = ref(false);
 
 // Get current user once
 const {
@@ -72,6 +71,7 @@ function resetForm() {
 async function saveTodo() {
   if (!userId) {
     console.error("User not authenticated");
+    // todo: notyfy + redirect to login OR refactor
     return;
   }
 
@@ -86,10 +86,6 @@ async function saveTodo() {
   dialog.value = false;
 }
 
-function requestDelete() {
-  confirmDeleteDialog.value = true;
-}
-
 async function performDelete() {
   if (!props.id) return;
 
@@ -98,10 +94,11 @@ async function performDelete() {
   if (!error) {
     await store.deleteTodo(props.id);
     dialog.value = false;
+    notify("Failed to delete a task, try again later", SnackbarType.error);
   }
 
   confirmDeleteDialog.value = false;
-  showDeletionConfirm.value = true;
+  notify("Task deleted", SnackbarType.success);
 }
 </script>
 
@@ -143,7 +140,11 @@ async function performDelete() {
       </v-card-text>
 
       <v-card-actions class="mx-4 mb-2">
-        <v-btn v-if="props.id" color="error" @click="requestDelete">
+        <v-btn
+          v-if="props.id"
+          color="error"
+          @click="confirmDeleteDialog = true"
+        >
           <v-icon size="18" class="mr-1">mdi-trash-can</v-icon> Delete
         </v-btn>
         <v-spacer />
@@ -167,11 +168,4 @@ async function performDelete() {
       </v-card-actions>
     </v-card>
   </v-dialog>
-
-  <AppSnackbar
-    v-model="showDeletionConfirm"
-    message="Task deleted
-  successfully."
-    :type="SnackbarType.success"
-  />
 </template>
