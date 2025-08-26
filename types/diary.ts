@@ -34,3 +34,20 @@ export type RichTextContent = {
     }>;
   }>;
 };
+
+// Mood tags
+export type MoodTag = {
+  id: string;
+  emoji: string;
+  text: string;
+};
+
+export const TagCategory = {
+  mood: "mood",
+  act: "act",
+  focus: "focus",
+  health: "health",
+  reflect: "reflect",
+} as const;
+
+export type TagCategoryType = keyof typeof TagCategory;
