@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import DairyPageDescription from "~/components/diary/DairyPageDescription.vue";
 import TodayDiary from "~/components/diary/TodayDiary.vue";
+import FullscreenLoader from "~/components/ui/FullscreenLoader.vue";
 import InfoPanel from "~/components/ui/InfoPanel.vue";
 import { useAuthGuard } from "~/composables/useAuthGuard";
 import { useDiaryStore } from "~/stores/diary";

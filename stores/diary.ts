@@ -17,6 +17,34 @@ export const useDiaryStore = defineStore("diary", {
   }),
 
   actions: {
+    async createTodayPage() {
+      const auth = useAuthStore();
+      const userId = await auth.getUserId();
+      if (!userId) return;
+
+      this.date = new Date().toISOString().split("T")[0];
+
+      const { data, error } = await supabase
+        .from("diary_pages")
+        .insert({
+          user_id: userId,
+          entry_date: this.date,
+          title: this.dayTitle,
+          background_color: this.backgroundColor,
+          mood_tag_ids: this.moodTagIds,
+          // weather : todo later
+        })
+        .select()
+        .single();
+
+      if (error || !data) {
+        notify("Failed to create diary page", SnackbarType.error);
+        return;
+      }
+
+      this.currentPageId = data.id;
+      this.isSaved = true;
+    },
     async loadTodayPage() {
       const auth = useAuthStore();
       const userId = await auth.getUserId();
@@ -57,6 +85,10 @@ export const useDiaryStore = defineStore("diary", {
       const oldTitle = this.dayTitle;
       this.dayTitle = text;
 
+      if (!this.isSaved) {
+        await this.createTodayPage();
+      }
+
       // DB update
       const { error } = await supabase
         .from("diary_pages")
@@ -72,9 +104,15 @@ export const useDiaryStore = defineStore("diary", {
       }
     },
     async updateBackgroundColor(color: string) {
+      console.log("eeeeeee", color, this.isSaved);
+
       // optimistic update
       const oldBackgroundColor = this.backgroundColor;
       this.backgroundColor = color;
+
+      if (!this.isSaved) {
+        await this.createTodayPage();
+      }
 
       // DB update
       const { error } = await supabase
@@ -94,6 +132,10 @@ export const useDiaryStore = defineStore("diary", {
       // optimistic update
       const oldMoodTagIds = this.moodTagIds;
       this.moodTagIds = tags;
+
+      if (!this.isSaved) {
+        await this.createTodayPage();
+      }
 
       // DB update
       const { error } = await supabase

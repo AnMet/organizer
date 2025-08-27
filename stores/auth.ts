@@ -27,6 +27,7 @@ export const useAuthStore = defineStore("auth", () => {
     if (!userId.value) {
       await fetchUser();
     }
+
     return userId.value;
   };
 

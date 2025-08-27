@@ -1,14 +1,23 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { formatDateTimeParts } from "~/composables/useCalendar";
 import { useCalendarStore } from "~/stores/calendar";
 import { useDiaryStore } from "~/stores/diary";
+import BaseDialog from "../ui/BaseDialog.vue";
+import ColorPicker from "../ui/ColorPicker.vue";
 
 const calendarStore = useCalendarStore();
 const diaryStore = useDiaryStore();
 
+const colorPickerDialog = ref(false);
+const selectedBgColor = ref(diaryStore.backgroundColor);
+
+function saveBgColor() {
+  diaryStore.updateBackgroundColor(selectedBgColor.value);
+}
+
 onMounted(() => {
-  title.value = diaryStore.dayTitle;
+  diaryStore.loadTodayPage();
 });
 
 const datetime = computed(() =>
@@ -20,65 +29,83 @@ const datetime = computed(() =>
   )
 );
 
-// Diary fields
-const title = ref<string>("");
-const moodTags = ref<string[]>([]); // todo type
+// Sync the store value when dialog opens
+watch(colorPickerDialog, (isOpen) => {
+  if (isOpen) {
+    selectedBgColor.value = diaryStore.backgroundColor;
+  }
+});
 </script>
 
 <template>
-  <div class="bg-white rounded elevation-2 pa-4">
-    <!-- Header -->
-    <div class="d-flex justify-space-between align-center mb-4">
-      <div>
-        <h2 class="text-h6 font-weight-bold mb-1">📅 {{ datetime.date }}</h2>
-        <v-text-field
-          v-model="title"
+  <div
+    class="rounded elevation-2 pa-4"
+    :style="{ backgroundColor: diaryStore.backgroundColor || '#ffffff' }"
+  >
+    <!-- Header: date and bg color picker -->
+    <div class="d-flex justify-space-between align-center">
+      <div class="text-h6">{{ datetime.date }}</div>
+      <v-btn
+        variant="text"
+        size="medium"
+        color="primary"
+        icon="mdi-palette"
+        @click="colorPickerDialog = true"
+        class="ml-auto"
+      ></v-btn>
+      <BaseDialog
+        v-model="colorPickerDialog"
+        title="Choose Background Color"
+        :showClose="true"
+        :onSave="saveBgColor"
+      >
+        <ColorPicker
+          :modelValue="selectedBgColor"
+          @update:color="selectedBgColor = $event"
+        />
+      </BaseDialog>
+    </div>
+
+    <!-- Main day info: mood tags, title and weather -->
+    <div class="d-flex mb-4">
+      <div class="flex-grow-1">
+        <v-textarea
+          v-model="diaryStore.dayTitle"
           placeholder="Add a title of the day"
           variant="plain"
           hide-details
-          class="text-subtitle-1 font-italic"
-          @blur="diaryStore.updateDayTitle(title)"
+          auto-grow
+          rows="1"
+          class="pt-0"
+          @blur="diaryStore.updateDayTitle(diaryStore.dayTitle)"
         />
+
+        <v-btn size="small" class="mt-2">Add tags</v-btn>
       </div>
 
       <!-- Weather placeholder -->
-      <div class="ml-auto">
-        <div class="bg-grey-lighten-3 pa-2 rounded text-caption text-center">
-          🌤️ Weather widget here
-        </div>
+      <div
+        class="ml-auto bg-grey-lighten-3 pa-2 rounded text-caption text-center"
+      >
+        🌤️ Weather widget here
       </div>
     </div>
+    <v-divider></v-divider>
 
-    <!-- <v-row>
-      <v-col sm="9">
-        <h2>{{ datetime.date }}</h2>
-        <div>add title</div>
-      </v-col>
-      <v-col sm="3">weather</v-col>
-    </v-row> -->
+    <!-- Content editor -->
+    <div fluid class="full-page">
+      <v-btn variant="text" prepend-icon="mdi-plus" color="primary">
+        Add new block
+      </v-btn>
+    </div>
   </div>
 </template>
 
-<!-- <style scoped>
-.diary-card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  max-width: 600px;
-  margin: auto;
-  font-family: sans-serif;
+<style scoped>
+.full-page {
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-section {
-  margin-top: 1.5rem;
-}
-textarea,
-input,
-select {
-  width: 100%;
-  margin-top: 0.5rem;
-  padding: 0.5rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-}
-</style> -->
+</style>
