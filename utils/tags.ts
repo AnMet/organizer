@@ -1,6 +1,14 @@
 import type { MoodTag, TagCategoryType } from "~/types/diary";
 
-export const tags: Record<TagCategoryType, Array<MoodTag>> = {
+export function resolveMoodTag(id: string): MoodTag | undefined {
+  for (const categoryTags of Object.values(moodTags)) {
+    const found = categoryTags.find((tag) => tag.id === id);
+    if (found) return found;
+  }
+  return { id, emoji: "❓", text: "Unknown Tag" };
+}
+
+export const moodTags: Record<TagCategoryType, Array<MoodTag>> = {
   mood: [
     { id: "hap", emoji: "😊", text: "Happy" },
     { id: "sad", emoji: "😢", text: "Sad" },

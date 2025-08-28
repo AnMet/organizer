@@ -6,6 +6,7 @@ export type DiaryPage = {
   entry_date: string; // ISO date string: 'YYYY-MM-DD'
   title: string | null;
   background_color: string | null;
+  dark: boolean;
   mood_tag_ids: string[]; // array of static tag IDs
   weather: WeatherSnapshot | null;
   created_at: string; // ISO timestamp

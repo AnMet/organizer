@@ -10,6 +10,7 @@ export const useDiaryStore = defineStore("diary", {
     currentPageId: "",
     dayTitle: "",
     backgroundColor: "",
+    dark: false,
     moodTagIds: [] as string[],
     blocks: [] as DiaryBlock[],
     date: "", // today's date
@@ -31,6 +32,7 @@ export const useDiaryStore = defineStore("diary", {
           entry_date: this.date,
           title: this.dayTitle,
           background_color: this.backgroundColor,
+          dark: this.dark,
           mood_tag_ids: this.moodTagIds,
           // weather : todo later
         })
@@ -66,7 +68,8 @@ export const useDiaryStore = defineStore("diary", {
           this.currentPageId = data.id;
           this.dayTitle = data.title;
           this.backgroundColor = data.background_color;
-          this.moodTagIds = data.mood_tag_ids;
+          this.dark = data.dark;
+          this.moodTagIds = data.mood_tag_ids || [];
           this.blocks = data.blocks || [];
           this.isSaved = true;
         } else {
@@ -104,8 +107,6 @@ export const useDiaryStore = defineStore("diary", {
       }
     },
     async updateBackgroundColor(color: string) {
-      console.log("eeeeeee", color, this.isSaved);
-
       // optimistic update
       const oldBackgroundColor = this.backgroundColor;
       this.backgroundColor = color;
@@ -126,6 +127,29 @@ export const useDiaryStore = defineStore("diary", {
         notify("Failed to update background color", SnackbarType.error);
       } else {
         notify("Background color updated", SnackbarType.success);
+      }
+    },
+    async updateDarkMode(dark: boolean) {
+      // optimistic update
+      const oldDarkModeValue = this.dark;
+      this.dark = dark;
+
+      if (!this.isSaved) {
+        await this.createTodayPage();
+      }
+
+      // DB update
+      const { error } = await supabase
+        .from("diary_pages")
+        .update({ dark: dark })
+        .eq("id", this.currentPageId);
+
+      if (error) {
+        // rollback
+        this.dark = oldDarkModeValue;
+        notify("Failed to update dark mode", SnackbarType.error);
+      } else {
+        notify("Dark mode updated", SnackbarType.success);
       }
     },
     async updateMoodTags(tags: string[]) {
